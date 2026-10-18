@@ -24,23 +24,24 @@ The following dates represent a proposed baseline for team review. They must be 
 
 ```mermaid
 gantt
-    title Scalable Telemedicine Platform - Proposed Schedule
+    title Scalable Telemedicine Platform - Project Schedule
     dateFormat YYYY-MM-DD
-    axisFormat %d %b
+    axisFormat %b %d
 
     section Planning
-    Planning and Requirements :a1, 2026-10-01, 16d
-    Base Application Selection :a2, 2026-10-17, 7d
+    Planning and Requirements       :a1, 2026-10-01, 16d
+    Base Application Selection      :a2, 2026-10-17, 7d
 
-    section DevOps
-    Containerization :b1, 2026-10-24, 10d
-    CI/CD and Validation :b2, 2026-11-03, 10d
-    Infrastructure and Deployment :b3, 2026-11-13, 10d
+    section Implementation
+    Containerization                :a3, 2026-10-24, 10d
+    CI/CD and Validation            :a4, 2026-11-03, 10d
+    Infrastructure and Deployment   :a5, 2026-11-13, 10d
 
     section Finalization
-    Monitoring and Documentation :c1, 2026-11-23, 8d
-    Final Testing and Presentation :c2, 2026-12-01, 4d
+    Monitoring and Documentation    :a6, 2026-11-23, 8d
+    Final Testing and Presentation  :a7, 2026-12-01, 4d
 ```
+
 
 ## 4. Project Milestones
 
