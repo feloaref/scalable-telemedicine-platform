@@ -1,3 +1,4 @@
+
 # Scalable Telemedicine Platform
 
 A scalable telemedicine platform project focused on applying modern DevOps practices, cloud infrastructure, automation, and monitoring to a web application.
@@ -76,6 +77,7 @@ The planning activities cover:
 4. Project timeline and milestones.
 5. Git workflow and branch strategy.
 6. Technology stack documentation.
+7. [System Architecture Diagram](https://github.com/feloaref/scalable-telemedicine-platform/issues/2)
 
 ## Proposed Delivery Phases
 
