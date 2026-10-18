@@ -1,7 +1,6 @@
-
 # Scalable Telemedicine Platform
 
-A scalable telemedicine platform project focused on applying modern DevOps practices, cloud infrastructure, automation, and monitoring to a web application.
+A scalable telemedicine platform project focused on applying modern DevOps practices, cloud infrastructure, automation, security, and monitoring to a web application.
 
 ## Project Overview
 
@@ -18,7 +17,7 @@ The project aims to prepare and deploy a web-based telemedicine application usin
 
 ## Initial Project Scope
 
-The proposed MVP includes:
+The proposed Minimum Viable Product (MVP) includes:
 
 - Patient and doctor user roles.
 - User registration and login.
@@ -31,12 +30,14 @@ Real-time video consultations, online payments, and real patient medical records
 ## Planned Technology Stack
 
 ### Application
+
 - React
 - Node.js and Express
 - PostgreSQL
 - Redis
 
 ### DevOps and Infrastructure
+
 - Git and GitHub
 - Jenkins
 - Docker and Docker Compose
@@ -46,14 +47,18 @@ Real-time video consultations, online payments, and real patient medical records
 - Terraform
 - AWS
 
-### Security and Quality
+### Security and Code Quality
+
 - SonarQube
 - Trivy
 
 ### Monitoring and Logging
+
 - Prometheus
 - Grafana
 - Loki
+
+The listed technologies represent the proposed stack. Their final use will be confirmed during implementation.
 
 ## Team Responsibilities
 
@@ -65,9 +70,11 @@ Real-time video consultations, online payments, and real patient medical records
 | Mohamed | Terraform and AWS |
 | Omar | Prometheus and Grafana |
 
+Team members will coordinate during integration, troubleshooting, testing, and documentation.
+
 ## Project Planning
 
-The planning work is tracked through GitHub Issues and the GitHub Projects board.
+Project planning activities are tracked through GitHub Issues and the GitHub Projects board.
 
 The planning activities cover:
 
@@ -77,28 +84,45 @@ The planning activities cover:
 4. Project timeline and milestones.
 5. Git workflow and branch strategy.
 6. Technology stack documentation.
-7. [System Architecture Diagram](https://github.com/feloaref/scalable-telemedicine-platform/issues/2)
+7. Risk assessment and mitigation.
+8. Project KPIs and evaluation planning.
+
+### System Architecture
+
+The proposed architecture and its discussion are documented in the [System Architecture Issue](https://github.com/feloaref/scalable-telemedicine-platform/issues/2).
+
+## Project Documentation
+
+The following documents provide the current project planning and requirements documentation.
+
+- [Project Plan](PROJECT_PLAN.md) — Proposed project phases, timeline, milestones, and deliverables.
+- [Requirements](REQUIREMENTS.md) — Project scope, functional and non-functional requirements, stakeholder analysis, user stories, and use cases.
+- [Risk Assessment and Mitigation Plan](RISK_ASSESSMENT.md) — Identified project risks and proposed mitigation strategies.
+- [Key Performance Indicators (KPIs)](KPIS.md) — Proposed success metrics, targets, and measurement methods.
+- [Literature Review, Feedback, and Evaluation](LITERATURE_REVIEW.md) — Current evaluation status, suggested improvements, and the grading categories stated in the project guidelines.
+
+These documents are initial planning artifacts. Proposed targets, architecture decisions, and implementation details will be reviewed and updated as the project progresses. Lecturer feedback and official grading weights will be added when confirmed.
 
 ## Proposed Delivery Phases
 
 1. Finalize project planning and requirements.
-2. Select and validate the base application.
+2. Select and validate the base application and its license.
 3. Containerize the application.
 4. Configure CI/CD and validation checks.
 5. Prepare infrastructure and deployment.
-6. Configure monitoring, logging, and final documentation.
+6. Configure monitoring, logging, security checks, and final documentation.
 
-The target completion is the first week of December 2026. The detailed schedule remains subject to team review and progress.
+The target completion is the first week of December 2026. The detailed schedule remains subject to team review and actual progress.
 
 ## Repository Status
 
-This repository currently contains project planning and documentation. The technology stack and implementation phases are planned and are not claimed to be fully implemented yet.
+This repository currently contains project planning and documentation. The technology stack, deployment architecture, and implementation phases are planned and are not claimed to be fully implemented yet.
 
 ## Project Management
 
 - [GitHub Issues](https://github.com/feloaref/scalable-telemedicine-platform/issues)
-- [GitHub Projects](https://github.com/feloaref/scalable-telemedicine-platform/projects)
+- [GitHub Project Board](https://github.com/users/feloaref/projects/1)
 
 ## License
 
-This project repository is licensed under the MIT License. Any third-party application template used as a base must be checked separately for its own license and attribution requirements.
+This repository is licensed under the MIT License. Any third-party application template used as a base must be checked separately for its license and attribution requirements.
