@@ -8,16 +8,18 @@ This plan defines the proposed project phases, milestones, deliverables, and tea
 
 ## 2. Project Timeline
 
-The following schedule is a proposed baseline. Exact dates should be confirmed by the team and adjusted according to actual progress.
+The following dates are a proposed baseline for team review. They must be confirmed against the official DEPI schedule and updated as actual progress becomes available.
 
 | Phase | Planned Start | Planned End | Main Deliverable |
 |---|---|---|---|
-| 1. Planning and Requirements | October 2026 | October 2026 | Planning and requirements documentation |
-| 2. Base Application Selection | October 2026 | October 2026 | Selected application and license review |
-| 3. Containerization | October 2026 | November 2026 | Dockerfiles and Docker Compose configuration |
-| 4. CI/CD and Validation | November 2026 | November 2026 | Automated pipeline and validation checks |
-| 5. Infrastructure and Deployment | November 2026 | November 2026 | Infrastructure configuration and deployment |
-| 6. Monitoring and Final Documentation | November 2026 | December 2026 | Monitoring dashboards, logs, test results, and final report |
+| 1. Planning and Requirements | October 1, 2026 | October 16, 2026 | Planning and requirements documentation |
+| 2. Base Application Selection | October 17, 2026 | October 23, 2026 | Selected application and license review |
+| 3. Containerization | October 24, 2026 | November 2, 2026 | Dockerfiles and Docker Compose configuration |
+| 4. CI/CD and Validation | November 3, 2026 | November 12, 2026 | Automated pipeline and validation checks |
+| 5. Infrastructure and Deployment | November 13, 2026 | November 22, 2026 | Infrastructure configuration and deployment |
+| 6. Monitoring and Documentation | November 23, 2026 | November 30, 2026 | Monitoring dashboards, logs, and deployment documentation |
+| 7. Final Testing and Presentation | December 1, 2026 | December 4, 2026 | Test results, final report, and presentation |
+
 
 ## 3. Gantt Chart
 
@@ -29,17 +31,18 @@ gantt
 
     section Planning
     Planning and Requirements :a1, 2026-10-01, 16d
-    Base Application Selection :a2, after a1, 7d
+    Base Application Selection :a2, 2026-10-17, 7d
 
     section DevOps
     Containerization :b1, 2026-10-24, 10d
-    CI/CD and Validation :b2, after b1, 10d
-    Infrastructure and Deployment :b3, after b2, 10d
+    CI/CD and Validation :b2, 2026-11-03, 10d
+    Infrastructure and Deployment :b3, 2026-11-13, 10d
 
     section Finalization
-    Monitoring and Documentation :c1, after b3, 7d
+    Monitoring and Documentation :c1, 2026-11-23, 8d
     Final Testing and Presentation :c2, 2026-12-01, 4d
 ```
+
 
 ## 4. Project Milestones
 
