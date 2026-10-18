@@ -197,13 +197,16 @@ The following features are outside the initial MVP scope:
 
 | Requirement | Related User Story | Related Use Case |
 |---|---|---|
-| FR-01: Registration and login | US-01, US-02 | UC-01 covers registration; login requires a separate implementation and test. |
-| FR-02: Browse doctors | US-03 | UC-02 begins with doctor browsing. |
+| FR-01: Registration | US-01 | UC-01 |
+| FR-01: Login | US-02 | UC-05 (to be added) |
+| FR-02: Browse doctors | US-03 | UC-06 (to be added) |
 | FR-03: Book appointments | US-04 | UC-02 |
-| FR-04: View appointments | US-05, US-06 | UC-03 covers the doctor's view; patient viewing requires implementation and testing. |
-| FR-05: Cancel appointments | US-05 | A cancellation use case should be added during detailed design. |
-| FR-06: Doctor appointment view | US-06 | UC-03 |
+| FR-04: Patient views appointments | US-05 | Patient appointment viewing use case (to be added) |
+| FR-05: Cancel appointments | US-05 | Appointment cancellation use case (to be added) |
+| FR-06: Doctor views appointments | US-06 | UC-03 |
 | NFR-06: Monitoring | US-07 | UC-04 |
 | NFR-07: Automation | US-08 | CI/CD workflow validation during implementation |
+
+The current use cases cover registration, appointment booking, doctor appointment viewing, and application health monitoring. Additional use cases for login, browsing doctors, patient appointment viewing, and appointment cancellation should be documented during detailed design.
 
 These user stories and use cases describe planned behavior. They must be validated against the selected base application and refined as the system design is finalized.
