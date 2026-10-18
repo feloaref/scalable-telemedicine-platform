@@ -8,7 +8,7 @@ This plan defines the proposed project phases, milestones, deliverables, and tea
 
 ## 2. Project Timeline
 
-The following dates are a proposed baseline for team review. They must be confirmed against the official DEPI schedule and updated as actual progress becomes available.
+The following dates represent a proposed baseline for team review. They must be confirmed against the official DEPI schedule and updated according to actual progress.
 
 | Phase | Planned Start | Planned End | Main Deliverable |
 |---|---|---|---|
@@ -19,7 +19,6 @@ The following dates are a proposed baseline for team review. They must be confir
 | 5. Infrastructure and Deployment | November 13, 2026 | November 22, 2026 | Infrastructure configuration and deployment |
 | 6. Monitoring and Documentation | November 23, 2026 | November 30, 2026 | Monitoring dashboards, logs, and deployment documentation |
 | 7. Final Testing and Presentation | December 1, 2026 | December 4, 2026 | Test results, final report, and presentation |
-
 
 ## 3. Gantt Chart
 
@@ -43,18 +42,17 @@ gantt
     Final Testing and Presentation :c2, 2026-12-01, 4d
 ```
 
-
 ## 4. Project Milestones
 
 | Milestone | Completion Evidence |
 |---|---|
-| M1: Planning Approved | Scope, requirements, risks, KPIs, and project plan reviewed |
-| M2: Base Application Selected | Application runs locally and its license is reviewed |
-| M3: Application Containerized | Required containers start successfully |
-| M4: CI/CD Configured | Pipeline executes the agreed build and validation stages |
-| M5: Infrastructure Deployed | Application is deployed to the selected environment |
-| M6: Monitoring Configured | Core service metrics and logs are accessible |
-| M7: Final Review Completed | Testing evidence and final documentation are prepared |
+| M1: Planning Approved | Project scope, requirements, risks, KPIs, and project plan reviewed by the team |
+| M2: Base Application Selected | A suitable application is selected, runs locally, and its license is reviewed |
+| M3: Application Containerized | Required application containers start and communicate successfully |
+| M4: CI/CD Configured | The pipeline executes the agreed build and validation stages successfully |
+| M5: Infrastructure Deployed | The application is deployed to the selected target environment |
+| M6: Monitoring Configured | Core service metrics, dashboards, and logs are accessible |
+| M7: Final Review Completed | Testing evidence, final documentation, and presentation materials are prepared |
 
 ## 5. Team Responsibilities
 
@@ -66,26 +64,46 @@ gantt
 | Mohamed | Terraform and AWS |
 | Omar | Prometheus and Grafana |
 
-Responsibilities may overlap during integration and troubleshooting. Team members should coordinate changes and review shared configurations.
+Responsibilities may overlap during integration, troubleshooting, and testing. Team members should coordinate shared changes and review configurations before merging them.
 
 ## 6. Deliverables
 
+The planned project deliverables include:
+
 - Project planning and requirements documentation.
-- Reviewed base application and license information.
+- Selected base application and license review.
 - Dockerfiles and Docker Compose configuration.
-- CI/CD pipeline configuration.
+- CI/CD pipeline configuration and validation results.
 - Infrastructure as Code and deployment configuration.
 - Security and code-quality scan results.
-- Monitoring dashboards and application logs.
-- Test results and final project documentation.
+- Monitoring dashboards and centralized application logs.
+- Test results, deployment instructions, and final project documentation.
+- Final project presentation.
+
+These deliverables describe expected outputs; they should only be marked complete after the relevant work and verification are finished.
 
 ## 7. Progress Tracking
 
-Project tasks will be tracked through GitHub Issues and the GitHub Projects board. Task status and planned dates should be updated as work progresses.
+Project tasks will be tracked through GitHub Issues and the GitHub Projects board.
 
-## 8. Schedule Assumptions
+- New tasks should be recorded as GitHub Issues.
+- Tasks should move to In Progress when work begins.
+- Tasks should move to Done after their acceptance criteria have been verified.
+- Project documentation and milestone status should be updated as the project progresses.
 
-- Dates in the Gantt chart are proposed planning dates, not evidence of completed work.
+## 8. Schedule Assumptions and Constraints
+
+- The dates in the timeline and Gantt chart are proposed planning dates, not evidence of completed work.
 - The schedule depends on selecting a suitable base application and resolving integration issues.
-- The team should revise the schedule when dependencies, workload, or implementation progress change.
-- Final delivery targets should be confirmed against the team's official DEPI schedule.
+- The team should revise the schedule if dependencies, workload, or implementation progress change.
+- The final delivery target is planned for December 4, 2026, subject to confirmation against the official DEPI schedule.
+- Cloud resource availability, cost limits, and access permissions may affect infrastructure and deployment activities.
+- Final performance and availability targets should be confirmed during implementation and testing.
+
+## 9. Review and Approval
+
+This plan should be reviewed by all team members before the schedule is treated as approved.
+
+| Review Item | Status |
+|---|---|
+| Project scope and deliverables reviewed | Pending team
