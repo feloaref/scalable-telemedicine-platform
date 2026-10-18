@@ -101,10 +101,18 @@ Project tasks will be tracked through GitHub Issues and the GitHub Projects boar
 - Cloud resource availability, cost limits, and access permissions may affect infrastructure and deployment activities.
 - Final performance and availability targets should be confirmed during implementation and testing.
 
+
 ## 9. Review and Approval
 
-This plan should be reviewed by all team members before the schedule is treated as approved.
+This plan must be reviewed by all team members before the proposed schedule and deliverables are treated as approved.
 
 | Review Item | Status |
 |---|---|
-| Project scope and deliverables reviewed | Pending team
+| Project scope and deliverables reviewed | Pending team confirmation |
+| Proposed timeline and milestones reviewed | Pending team confirmation |
+| Team responsibilities reviewed | Pending team confirmation |
+| Final delivery date confirmed against DEPI schedule | Pending confirmation |
+| Supervisor or lecturer feedback received | Pending |
+
+**Approval Note:** The plan is a working baseline. Update the review statuses after the relevant confirmations are received.
+
