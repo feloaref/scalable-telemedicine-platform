@@ -16,12 +16,14 @@ The Scalable Telemedicine Platform aims to provide an online platform where pati
 ## 3. User Roles
 
 ### Patient
+
 - Register and log in.
 - Browse available doctors and specialties.
 - Book appointments.
 - View and cancel appointments.
 
 ### Doctor
+
 - Log in to the platform.
 - Manage and view assigned appointments.
 - Maintain basic professional profile information.
@@ -62,6 +64,7 @@ The Scalable Telemedicine Platform aims to provide an online platform where pati
 The initial MVP will focus on user authentication, doctor profiles, and appointment management.
 
 The following features are outside the initial MVP scope:
+
 - Video consultations.
 - Online payments.
 - Full electronic medical records.
@@ -90,6 +93,7 @@ The following features are outside the initial MVP scope:
 - Advanced appointment notifications.
 - Enhanced security and backup procedures.
 - Load testing and more detailed performance targets.
+
 ## 11. Stakeholder Analysis
 
 | Stakeholder | Role | Needs and Expectations |
@@ -193,20 +197,99 @@ The following features are outside the initial MVP scope:
 **Postcondition:**
 - The service status is reviewed, and any identified issue can be investigated.
 
+### UC-05: User Login
+
+**Primary Actors:** Patient, Doctor
+
+**Preconditions:**
+- The user has an existing account.
+- The user can access the application.
+
+**Main Flow:**
+1. The user opens the login page.
+2. The user enters their credentials.
+3. The system validates the credentials.
+4. The system grants access if the credentials are valid.
+5. The system redirects the user to the appropriate interface.
+
+**Alternative Flow:**
+- If the credentials are invalid, the system displays an appropriate error message.
+
+**Postcondition:**
+- The user is authenticated, or access is denied with a clear message.
+
+### UC-06: Browse Doctors
+
+**Primary Actor:** Patient
+
+**Preconditions:**
+- The patient can access the application.
+
+**Main Flow:**
+1. The patient opens the doctors section.
+2. The system retrieves the available doctors and their basic information.
+3. The system displays the doctors and their specialties.
+
+**Alternative Flow:**
+- If no doctors are available, the system displays an appropriate message.
+
+**Postcondition:**
+- The patient can review the available doctors.
+
+### UC-07: View Patient Appointments
+
+**Primary Actor:** Patient
+
+**Preconditions:**
+- The patient is authenticated.
+
+**Main Flow:**
+1. The patient opens the appointments section.
+2. The system retrieves appointments associated with the authenticated patient.
+3. The system displays the patient's appointment details.
+
+**Alternative Flow:**
+- If the patient has no appointments, the system displays an empty-state message.
+
+**Postcondition:**
+- The patient can review their appointments.
+
+### UC-08: Cancel Appointment
+
+**Primary Actor:** Patient
+
+**Preconditions:**
+- The patient is authenticated.
+- The patient has an appointment eligible for cancellation.
+
+**Main Flow:**
+1. The patient opens their appointments.
+2. The patient selects an eligible appointment.
+3. The patient requests cancellation.
+4. The system validates the cancellation request.
+5. The system updates the appointment status and confirms the cancellation.
+
+**Alternative Flow:**
+- If the appointment is not eligible for cancellation, the system displays an appropriate message.
+
+**Postcondition:**
+- The appointment is cancelled, or the cancellation request is rejected with a clear message.
+
 ## 14. Requirement Traceability
 
 | Requirement | Related User Story | Related Use Case |
 |---|---|---|
-| FR-01: Registration | US-01 | UC-01 |
-| FR-01: Login | US-02 | UC-05 (to be added) |
-| FR-02: Browse doctors | US-03 | UC-06 (to be added) |
+| FR-01: Patient registration | US-01 | UC-01 |
+| FR-01: User login | US-02 | UC-05 |
+| FR-02: Browse doctors | US-03 | UC-06 |
 | FR-03: Book appointments | US-04 | UC-02 |
-| FR-04: Patient views appointments | US-05 | Patient appointment viewing use case (to be added) |
-| FR-05: Cancel appointments | US-05 | Appointment cancellation use case (to be added) |
-| FR-06: Doctor views appointments | US-06 | UC-03 |
+| FR-04: Patient views appointments | US-05 | UC-07 |
+| FR-05: Cancel appointments | US-05 | UC-08 |
+| FR-06: Doctor views assigned appointments | US-06 | UC-03 |
+| FR-07: Persistent data storage | US-01, US-04, US-06 | UC-01, UC-02, UC-03 |
 | NFR-06: Monitoring | US-07 | UC-04 |
 | NFR-07: Automation | US-08 | CI/CD workflow validation during implementation |
 
-The current use cases cover registration, appointment booking, doctor appointment viewing, and application health monitoring. Additional use cases for login, browsing doctors, patient appointment viewing, and appointment cancellation should be documented during detailed design.
+The use cases document patient registration, user login, doctor browsing, appointment booking, patient appointment viewing and cancellation, doctor appointment viewing, and application health monitoring.
 
 These user stories and use cases describe planned behavior. They must be validated against the selected base application and refined as the system design is finalized.
