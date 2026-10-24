@@ -1,4 +1,3 @@
-[
 # Data Flow and System Behavior - Scalable Telemedicine Platform
 
 ## 1. Data Flow Diagrams (DFD)
