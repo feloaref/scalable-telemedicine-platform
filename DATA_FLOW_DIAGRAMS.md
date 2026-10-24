@@ -170,6 +170,7 @@ classDiagram
         +Varchar phone
         +Boolean is_active
         +Timestamp created_at
+        +Timestamp updated_at
         +login()
         +logout()
     }
@@ -198,11 +199,17 @@ classDiagram
         +Text description
     }
 
+    class DoctorSpecialty {
+        +BigInt doctor_id
+        +Int specialty_id
+    }
+
     class AvailabilitySlot {
         +BigInt slot_id
         +BigInt doctor_id
         +Timestamp start_time
         +Timestamp end_time
+        +Timestamp created_at
     }
 
     class Appointment {
@@ -212,13 +219,21 @@ classDiagram
         +Varchar status
         +Varchar reason
         +Timestamp cancelled_at
+        +Timestamp created_at
+        +Timestamp updated_at
         +create()
         +cancel()
     }
 
     User "1" --> "0..1" Patient : profile
     User "1" --> "0..1" Doctor : profile
-    Doctor "1" --> "*" AvailabilitySlot : publishes
+
+    Doctor "1" --> "1..*" DoctorSpecialty : specialties
+    Specialty "1" --> "0..*" DoctorSpecialty : doctors
+
+    Doctor "1" --> "0..*" AvailabilitySlot : publishes
+    Patient "1" --> "0..*" Appointment : books
+    AvailabilitySlot "1" --> "0..*" Appointment : appointment history
     Doctor "*" --> "*" Specialty : practices
     Patient "1" --> "*" Appointment : books
     AvailabilitySlot "1" --> "0..1" Appointment : reserved_by
