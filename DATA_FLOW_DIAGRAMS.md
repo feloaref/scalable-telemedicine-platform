@@ -143,6 +143,7 @@ flowchart TD
 ## 4. Appointment State Diagram
 
 ```mermaid
+
 stateDiagram-v2
     [*] --> Booked: Patient books an available slot (UC-02)
 
@@ -150,34 +151,35 @@ stateDiagram-v2
     Booked --> Cancelled: Patient cancels appointment (UC-08)
 
     PendingConsultation --> Completed: Consultation session finishes
-    PendingConsultation --> Cancelled: Cancellation allowed by policy
 
     Cancelled --> [*]
     Completed --> [*]
+
 ```
 
 ## 5. Class Diagram
 
 ```mermaid
+
 classDiagram
     class User {
-        +BigInt user_id
-        +Varchar email
+        +BigInt user_id PK
+        +Varchar email UK
         +Varchar password_hash
         +Varchar role
         +Varchar first_name
         +Varchar last_name
         +Varchar phone
         +Boolean is_active
-        +Timestamp created_at
-        +Timestamp updated_at
+        +Timestamptz created_at
+        +Timestamptz updated_at
         +login()
         +logout()
     }
 
     class Patient {
-        +BigInt patient_id
-        +BigInt user_id
+        +BigInt patient_id PK
+        +BigInt user_id FK_UK
         +Date date_of_birth
         +Varchar gender
         +bookAppointment()
@@ -185,42 +187,42 @@ classDiagram
     }
 
     class Doctor {
-        +BigInt doctor_id
-        +BigInt user_id
-        +Varchar license_number
+        +BigInt doctor_id PK
+        +BigInt user_id FK_UK
+        +Varchar license_number UK
         +Text bio
         +SmallInt years_of_experience
         +viewAssignedAppointments()
     }
 
     class Specialty {
-        +Int specialty_id
-        +Varchar name
+        +Int specialty_id PK
+        +Varchar name UK
         +Text description
     }
 
     class DoctorSpecialty {
-        +BigInt doctor_id
-        +Int specialty_id
+        +BigInt doctor_id PK_FK
+        +Int specialty_id PK_FK
     }
 
     class AvailabilitySlot {
-        +BigInt slot_id
-        +BigInt doctor_id
-        +Timestamp start_time
-        +Timestamp end_time
-        +Timestamp created_at
+        +BigInt slot_id PK
+        +BigInt doctor_id FK
+        +Timestamptz start_time
+        +Timestamptz end_time
+        +Timestamptz created_at
     }
 
     class Appointment {
-        +BigInt appointment_id
-        +BigInt patient_id
-        +BigInt slot_id
+        +BigInt appointment_id PK
+        +BigInt patient_id FK
+        +BigInt slot_id FK
         +Varchar status
         +Varchar reason
-        +Timestamp cancelled_at
-        +Timestamp created_at
-        +Timestamp updated_at
+        +Timestamptz cancelled_at
+        +Timestamptz created_at
+        +Timestamptz updated_at
         +create()
         +cancel()
     }
@@ -234,7 +236,5 @@ classDiagram
     Doctor "1" --> "0..*" AvailabilitySlot : publishes
     Patient "1" --> "0..*" Appointment : books
     AvailabilitySlot "1" --> "0..*" Appointment : appointment history
-    Doctor "*" --> "*" Specialty : practices
-    Patient "1" --> "*" Appointment : books
-    AvailabilitySlot "1" --> "0..1" Appointment : reserved_by
+
 ```
