@@ -14,6 +14,7 @@ graph TD
 ### 1.2. Level 1 DFD
 
 ```mermaid
+
 graph TD
     subgraph ext["External Entities"]
         P["Patient"]
@@ -48,10 +49,15 @@ graph TD
 
     P -->|"Book / Cancel appointment request"| P3
     D -->|"View assigned appointments request"| P3
-    P3 <-->|"Check / Update slot availability"| DS3
+
+    P3 -->|"Read slot details"| DS3
+    DS3 -->|"Slot details"| P3
+
     P3 <-->|"Create / Read / Update appointment"| DS4
+
     P3 -->|"Booking / Cancellation status"| P
     P3 -->|"Assigned appointment details"| D
+
 ```
 ## 2. Sequence Diagram - Booking an Appointment
 
