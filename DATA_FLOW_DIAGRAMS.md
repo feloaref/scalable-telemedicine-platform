@@ -53,9 +53,9 @@ graph TD
     P3 -->|"Booking / Cancellation status"| P
     P3 -->|"Assigned appointment details"| D
 ```
-
 ## 2. Sequence Diagram - Booking an Appointment
 
+```mermaid
 sequenceDiagram
     autonumber
     actor Patient as Patient
@@ -65,16 +65,16 @@ sequenceDiagram
 
     Patient->>FE: Browse doctors and view available slots
     FE->>BE: GET /api/doctors/{id}/slots
-    BE->>DB: Query available availability_slots
+    BE->>DB: Query available slots
     DB-->>BE: Return available slots
     BE-->>FE: Return slots list
     FE-->>Patient: Display available time slots
 
     Patient->>FE: Select slot and submit booking request
-    FE->>BE: POST /api/appointments (patient_id, slot_id, reason)
-    BE->>DB: Validate slot availability and attempt booking
+    FE->>BE: POST /api/appointments
+    BE->>DB: Validate slot and attempt booking
 
-    alt Slot is available and booking succeeds
+    alt Booking succeeds
         DB-->>BE: Appointment saved successfully
         BE-->>FE: 201 Created - Booking Confirmed
         FE-->>Patient: Display booking confirmation
@@ -82,12 +82,12 @@ sequenceDiagram
         DB-->>BE: Booking rejected due to slot conflict
         BE-->>FE: 409 Conflict - Slot Unavailable
         FE-->>Patient: Display error and request another slot
-    else Database or server error
-        DB-->>BE: Booking operation failed
+    else Database operation fails
+        DB-->>BE: Database operation failed
         BE-->>FE: 500 Internal Server Error
         FE-->>Patient: Display booking failure message
     end
-
+```
 ## 3. User Flow (Flowchart)
 
 ```mermaid
