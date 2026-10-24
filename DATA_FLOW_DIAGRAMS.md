@@ -1,4 +1,4 @@
-
+[
 # Data Flow and System Behavior - Scalable Telemedicine Platform
 
 ## 1. Data Flow Diagrams (DFD)
@@ -254,3 +254,4 @@ classDiagram
     Patient "1" --> "0..*" Appointment : books
     AvailabilitySlot "1" --> "0..*" Appointment : appointment history
 ```
+](https://github.com/feloaref/scalable-telemedicine-platform/blob/main/DATA_FLOW_DIAGRAMS.md)
