@@ -62,40 +62,42 @@ graph TD
 ## 2. Sequence Diagram - Booking an Appointment
 
 ```mermaid
+
 sequenceDiagram
-    autonumber
     actor Patient
     participant FE as React Frontend
-    participant BE as Node.js / Express API
+    participant API as Node.js/Express API
     participant DB as PostgreSQL Database
 
-    Patient->>FE: Browse doctors and available slots
-    FE->>BE: GET /api/doctors/{id}/slots
-    BE->>DB: Query available slots
-    DB-->>BE: Return available slots
-    BE-->>FE: 200 OK - Slots list
-    FE-->>Patient: Display available slots
+    Patient->>FE: Select doctor and available slot
+    FE->>API: POST /appointments (slot_id, reason)
+    API->>API: Authenticate user and validate request
 
-    Patient->>FE: Select slot and submit booking
-    FE->>BE: POST /api/appointments
-    Note over FE,BE: Request includes slot_id and booking details
-
-    BE->>BE: Validate request and user permissions
-    BE->>DB: Attempt atomic booking
-
-    alt Booking succeeds
-        DB-->>BE: Appointment saved
-        BE-->>FE: 201 Created - Booking confirmed
-        FE-->>Patient: Display booking confirmation
-    else Slot already booked
-        DB-->>BE: Unique constraint conflict
-        BE-->>FE: 409 Conflict - Slot unavailable
-        FE-->>Patient: Show error and request another slot
-    else Unexpected server or database error
-        DB-->>BE: Operation failed
-        BE-->>FE: 500 Internal Server Error
-        FE-->>Patient: Display failure message
+    alt Invalid request or unauthorized user
+        API-->>FE: 400 Bad Request / 401 Unauthorized
+        FE-->>Patient: Display validation or authentication error
+    else Valid request
+        API->>DB: Begin transaction
+        API->>DB: Check slot and insert appointment
+        Note over API,DB: Enforce one active appointment per slot
+        alt Booking successful
+            DB-->>API: Appointment created
+            API->>DB: Commit transaction
+            API-->>FE: 201 Created
+            FE-->>Patient: Display booking confirmation
+        else Slot already booked
+            DB-->>API: Unique constraint conflict
+            API->>DB: Rollback transaction
+            API-->>FE: 409 Conflict
+            FE-->>Patient: Display slot unavailable message
+        else Unexpected database or server error
+            DB-->>API: Error
+            API->>DB: Rollback transaction
+            API-->>FE: 500 Internal Server Error
+            FE-->>Patient: Display generic error message
+        end
     end
+
 ```
 ## 3. User Flow (Flowchart)
 
