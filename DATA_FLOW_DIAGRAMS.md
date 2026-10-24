@@ -7,10 +7,10 @@
 
 ```mermaid
 graph TD
-    Patient["Patient"] -->|"Registration / Login, Search Doctors, Book / Cancel Appointment"| System(("Scalable Telemedicine Platform"))
+    Patient["Patient"] -->|"Registration / Login, Search Doctors, Book / Cancel Appointment, Manage Profile"| System(("Scalable Telemedicine Platform"))
     Doctor["Doctor"] -->|"Registration / Login, View Assigned Appointments, Manage Profile"| System
-    System -->|"Authentication Result, Doctor List, Availability, Booking Confirmation, Status Updates"| Patient
-    System -->|"Authentication Result, Profile Update Result, Appointment Details"| Doctor
+    System -->|"Authentication Result, Doctor List, Availability, Booking Confirmation, Cancellation Status, Profile Update Result"| Patient
+    System -->|"Authentication Result, Appointment Details, Profile Update Result"| Doctor
 ```
 
 ### 1.2. Level 1 DFD
@@ -45,22 +45,21 @@ graph TD
     P -->|"Search criteria / Specialty"| P2
     P2 -->|"Query doctor profiles and specialties"| DS2
     DS2 -->|"Doctor profiles and specialties"| P2
-    P2 -->|"Query available slots"| DS3
-    DS3 -->|"Available slots"| P2
+    P2 -->|"Query availability slots"| DS3
+    DS3 -->|"Availability slot details"| P2
     P2 -->|"Doctor list and availability"| P
 
     P -->|"Book / Cancel appointment request"| P3
     D -->|"View assigned appointments request"| P3
-
     P3 -->|"Read slot details"| DS3
     DS3 -->|"Slot details"| P3
-    P3 <-->|"Create / Read / Update appointment"| DS4
+    P3 <-->|"Create / Read / Update appointment records"| DS4
     P3 -->|"Booking / Cancellation status"| P
     P3 -->|"Assigned appointment details"| D
 
     P -->|"Profile details / Profile update request"| P4
     D -->|"Profile details / Profile update request"| P4
-    P4 <-->|"Read / Create / Update profile data"| DS1
+    P4 <-->|"Read / Create / Update user profile data"| DS1
     P4 <-->|"Read / Update doctor details"| DS2
     P4 -->|"Profile update result"| P
     P4 -->|"Profile update result"| D
@@ -84,8 +83,8 @@ sequenceDiagram
         FE-->>Patient: Display validation or authentication error
     else Valid request
         API->>DB: Begin transaction
-        API->>DB: Verify slot exists and insert appointment
-        Note over API,DB: Database constraint prevents multiple active appointments per slot
+        API->>DB: Verify slot exists and attempt appointment insert
+        Note over API,DB: A database constraint prevents multiple active appointments for the same slot
 
         alt Booking successful
             DB-->>API: Appointment created
@@ -108,7 +107,7 @@ sequenceDiagram
     end
 ```
 
-## 3. User Flow (Flowchart)
+## 3. User Flow (Activity Diagram)
 
 ```mermaid
 flowchart TD
@@ -129,14 +128,13 @@ flowchart TD
     Search --> ViewSlots[View Doctor Availability Slots]
     ViewSlots --> SelectSlot[Select Desired Slot]
     SelectSlot --> BookReq[Submit Booking Request]
-    BookReq --> CheckSlot{Slot Still Available?}
+    BookReq --> CheckSlot{Booking Accepted by API?}
 
-    CheckSlot -->|No| ErrorMsg[Display Slot Unavailable Error]
+    CheckSlot -->|No - Slot Unavailable| ErrorMsg[Display Slot Unavailable Error]
     ErrorMsg --> ViewSlots
 
-    CheckSlot -->|Yes| SaveDB[Submit Booking to API and Database]
-    SaveDB --> SaveSuccess{Booking Saved Successfully?}
-    SaveSuccess -->|Yes| Confirm[Show Booking Success]
+    CheckSlot -->|Yes| SaveSuccess{Appointment Saved Successfully?}
+    SaveSuccess -->|Yes| Confirm[Show Booking Confirmation]
     SaveSuccess -->|No| BookingError[Display Booking Failure]
     Confirm --> End([End])
     BookingError --> End
@@ -172,7 +170,6 @@ stateDiagram-v2
     Cancelled --> [*]
     Completed --> [*]
 ```
-
 
 ## 5. Class Diagram
 
