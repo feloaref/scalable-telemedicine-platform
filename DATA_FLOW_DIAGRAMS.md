@@ -63,6 +63,7 @@ graph TD
 
 ```mermaid
 
+
 sequenceDiagram
     actor Patient
     participant FE as React Frontend
@@ -97,6 +98,7 @@ sequenceDiagram
             FE-->>Patient: Display generic error message
         end
     end
+
 
 ```
 ## 3. User Flow (Flowchart)
