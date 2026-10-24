@@ -14,7 +14,7 @@ graph TD
 
 ### 1.2. Level 1 DFD
 
-```mermaid
+
 graph TD
     subgraph ext["External Entities"]
         P["Patient"]
@@ -29,27 +29,31 @@ graph TD
 
     subgraph store["Data Stores"]
         DS1[("Users and Profiles DB")]
-        DS2[("Availability Slots DB")]
-        DS3[("Appointments DB")]
+        DS2[("Doctors and Specialties DB")]
+        DS3[("Availability Slots DB")]
+        DS4[("Appointments DB")]
     end
 
-    P -->|"Login / Register credentials"| P1
+    P -->|"Registration / Login credentials"| P1
     D -->|"Login credentials"| P1
-    P1 -->|"Verify and store user data"| DS1
+    P1 <-->|"Read / Create / Update user data"| DS1
+    P1 -->|"Authentication result"| P
+    P1 -->|"Authentication result"| D
 
     P -->|"Search criteria / Specialty"| P2
-    P2 -->|"Query doctors and specialties"| DS2
-    DS2 -->|"Return available doctors"| P2
-    P2 -->|"Display doctors list"| P
+    P2 -->|"Query doctor profiles and specialties"| DS2
+    DS2 -->|"Doctor profiles and specialties"| P2
+    P2 -->|"Query available slots"| DS3
+    DS3 -->|"Available slots"| P2
+    P2 -->|"Doctor list and availability"| P
 
-    P -->|"Book slot / Cancel slot"| P3
-    D -->|"View assigned slots"| P3
-    P3 -->|"Check and update slot status"| DS2
-    P3 -->|"Insert / Update appointment"| DS3
-    DS3 -->|"Confirm transaction"| P3
-    P3 -->|"Booking confirmation / Status updates"| P
-    P3 -->|"Appointment details"| D
-```
+    P -->|"Book / Cancel appointment request"| P3
+    D -->|"View assigned appointments request"| P3
+    P3 <-->|"Check / Update slot availability"| DS3
+    P3 <-->|"Create / Read / Update appointment"| DS4
+    P3 -->|"Booking / Cancellation status"| P
+    P3 -->|"Assigned appointment details"| D
+
 
 ## 2. Sequence Diagram - Booking an Appointment
 
