@@ -3,44 +3,57 @@
 ## 1. Data Flow Diagrams (DFD)
 
 ### 1.1. Context-Level DFD (Level 0)
+
 ```mermaid
 graph TD
-    Patient["Patient"] -->|Registration, Search Doctors, Book/Cancel Appointment| System((Scalable Telemedicine Platform))
-    Doctor["Doctor"] -->|View Assigned Appointments, Manage Profile| System
-    System -->|Booking Confirmation, Doctor List, Status Updates| Patient
-    System -->|Appointment Details| Doctor
+    Patient["Patient"] -->|"Registration, Search Doctors, Book/Cancel Appointment"| System(("Scalable Telemedicine Platform"))
+    Doctor["Doctor"] -->|"View Assigned Appointments, Manage Profile"| System
+    System -->|"Booking Confirmation, Doctor List, Status Updates"| Patient
+    System -->|"Appointment Details"| Doctor
+```
+
+### 1.2. Level 1 DFD
+
+```mermaid
 graph TD
-    subgraph External Entities
-        P[Patient]
-        D[Doctor]
+    subgraph ext["External Entities"]
+        P["Patient"]
+        D["Doctor"]
     end
 
-    subgraph System Processes
-        P1[1.0 User Authentication]
-        P2[2.0 Doctor Search & Browse]
-        P3[3.0 Appointment Management]
+    subgraph proc["System Processes"]
+        P1["1.0 User Authentication"]
+        P2["2.0 Doctor Search and Browse"]
+        P3["3.0 Appointment Management"]
     end
 
-    subgraph Data Stores
-        DS1[(Users & Profiles DB)]
-        DS2[(Availability Slots DB)]
-        DS3[(Appointments DB)]
+    subgraph store["Data Stores"]
+        DS1[("Users and Profiles DB")]
+        DS2[("Availability Slots DB")]
+        DS3[("Appointments DB")]
     end
 
-    P -->|Login / Register credentials| P1
-    D -->|Login credentials| P1
-    P1 -->|Verify & Store user data| DS1
+    P -->|"Login / Register credentials"| P1
+    D -->|"Login credentials"| P1
+    P1 -->|"Verify and store user data"| DS1
 
-    P -->|Search criteria / Specialty| P2
-    P2 -->|Query doctors & specialties| DS2
-    DS2 -->|Return available doctors| P2
-    P2 -->|Display doctors list| P
+    P -->|"Search criteria / Specialty"| P2
+    P2 -->|"Query doctors and specialties"| DS2
+    DS2 -->|"Return available doctors"| P2
+    P2 -->|"Display doctors list"| P
 
-    P -->|Book slot / Cancel slot| P3
-    D -->|View assigned slots| P3
-    P3 -->|Check & update slot status| DS2
-    P3 -->|Insert / Update appointment| DS3
-    DS3 -->|Confirm transaction| P3
+    P -->|"Book slot / Cancel slot"| P3
+    D -->|"View assigned slots"| P3
+    P3 -->|"Check and update slot status"| DS2
+    P3 -->|"Insert / Update appointment"| DS3
+    DS3 -->|"Confirm transaction"| P3
+    P3 -->|"Booking confirmation / Status updates"| P
+    P3 -->|"Appointment details"| D
+```
+
+## 2. Sequence Diagram - Booking an Appointment
+
+```mermaid
 sequenceDiagram
     autonumber
     actor Patient as Patient
@@ -62,34 +75,49 @@ sequenceDiagram
     DB-->>BE: Appointment saved successfully
     BE-->>FE: Return 201 Created (Booking Confirmed)
     FE-->>Patient: Display confirmation message
+```
+
+## 3. User Flow (Flowchart)
+
+```mermaid
 flowchart TD
     Start([Start]) --> Login[User Logs In]
     Login --> RoleCheck{User Role?}
-    
+
     RoleCheck -->|Patient| PatientHome[Patient Dashboard]
     RoleCheck -->|Doctor| DoctorHome[Doctor Dashboard]
-    
+
     PatientHome --> Action{Choose Action}
-    
+
     Action -->|Browse Doctors| Search[Search Doctors & Specialties]
     Search --> ViewSlots[View Doctor Availability Slots]
     ViewSlots --> SelectSlot[Select Desired Slot]
     SelectSlot --> BookReq[Submit Booking Request]
     BookReq --> CheckSlot{Slot Still Available?}
-    CheckSlot -->|No| ErrorMsg[Display 'Slot No Longer Available'] --> ViewSlots
+    CheckSlot -->|No| ErrorMsg["Display 'Slot No Longer Available'"]
+    ErrorMsg --> ViewSlots
     CheckSlot -->|Yes| SaveDB[Save Appointment in DB]
     SaveDB --> Confirm[Show Booking Success]
-    
+
     Action -->|Manage Appointments| ViewApp[View Current Appointments]
     ViewApp --> CancelChoice{Want to Cancel?}
-    CancelChoice -->|Yes| CancelDB[Update Appointment Status to Cancelled] --> CancelConfirm[Show Cancellation Success]
+    CancelChoice -->|Yes| CancelDB[Update Appointment Status to Cancelled]
+    CancelDB --> CancelConfirm[Show Cancellation Success]
     CancelChoice -->|No| End([End])
 
     DoctorHome --> DocView[View Assigned Appointments]
     DocView --> End
+
+    Confirm --> End
+    CancelConfirm --> End
+```
+
+## 4. Appointment State Diagram
+
+```mermaid
 stateDiagram-v2
     [*] --> Booked : Patient books an available slot (UC-02)
-    
+
     state Booked {
         [*] --> Active
         Active --> PendingConsultation : Time approaches
@@ -97,9 +125,14 @@ stateDiagram-v2
 
     Booked --> Cancelled : Patient cancels appointment (UC-08)
     Booked --> Completed : Consultation session finishes
-    
+
     Cancelled --> [*]
     Completed --> [*]
+```
+
+## 5. Class Diagram
+
+```mermaid
 classDiagram
     class User {
         +BigInt user_id
@@ -163,6 +196,4 @@ classDiagram
     Doctor "*" --> "*" Specialty : practices
     Patient "1" --> "*" Appointment : books
     AvailabilitySlot "1" --> "0..1" Appointment : reserved_by
-    
-    Confirm --> End
-    CancelConfirm --> End
+```
