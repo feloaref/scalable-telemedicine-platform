@@ -1,3 +1,4 @@
+
 # Data Flow and System Behavior - Scalable Telemedicine Platform
 
 ## 1. Data Flow Diagrams (DFD)
@@ -172,7 +173,6 @@ stateDiagram-v2
     Completed --> [*]
 ```
 
-**Note:** `PendingConsultation` represents a conceptual lifecycle stage. The database `appointments.status` values remain `booked`, `cancelled`, and `completed`, as defined in `DATABASE_DESIGN.md`.
 
 ## 5. Class Diagram
 
@@ -253,4 +253,3 @@ classDiagram
     Patient "1" --> "0..*" Appointment : books
     AvailabilitySlot "1" --> "0..*" Appointment : appointment history
 ```
-](https://github.com/feloaref/scalable-telemedicine-platform/blob/main/DATA_FLOW_DIAGRAMS.md)
