@@ -144,15 +144,13 @@ flowchart TD
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Booked : Patient books an available slot (UC-02)
+    [*] --> Booked: Patient books an available slot (UC-02)
 
-    state Booked {
-        [*] --> Active
-        Active --> PendingConsultation : Time approaches
-    }
+    Booked --> PendingConsultation: Consultation time approaches
+    Booked --> Cancelled: Patient cancels appointment (UC-08)
 
-    Booked --> Cancelled : Patient cancels appointment (UC-08)
-    Booked --> Completed : Consultation session finishes
+    PendingConsultation --> Completed: Consultation session finishes
+    PendingConsultation --> Cancelled: Cancellation allowed by policy
 
     Cancelled --> [*]
     Completed --> [*]
