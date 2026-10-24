@@ -56,7 +56,6 @@ graph TD
 
 ## 2. Sequence Diagram - Booking an Appointment
 
-```mermaid
 sequenceDiagram
     autonumber
     actor Patient as Patient
@@ -64,21 +63,30 @@ sequenceDiagram
     participant BE as Node.js / Express API
     participant DB as PostgreSQL Database
 
-    Patient->>FE: Browse doctors & view available slots
+    Patient->>FE: Browse doctors and view available slots
     FE->>BE: GET /api/doctors/{id}/slots
     BE->>DB: Query available availability_slots
-    DB-->>BE: Return active slots
-    BE-->>FE: Send slots list
+    DB-->>BE: Return available slots
+    BE-->>FE: Return slots list
     FE-->>Patient: Display available time slots
 
-    Patient->>FE: Select slot & submit booking request
+    Patient->>FE: Select slot and submit booking request
     FE->>BE: POST /api/appointments (patient_id, slot_id, reason)
-    BE->>DB: INSERT INTO appointments (patient_id, slot_id, status='booked')
-    Note over BE,DB: Database partial unique index ensures<br/>no double-booking for the active slot.
-    DB-->>BE: Appointment saved successfully
-    BE-->>FE: Return 201 Created (Booking Confirmed)
-    FE-->>Patient: Display confirmation message
-```
+    BE->>DB: Validate slot availability and attempt booking
+
+    alt Slot is available and booking succeeds
+        DB-->>BE: Appointment saved successfully
+        BE-->>FE: 201 Created - Booking Confirmed
+        FE-->>Patient: Display booking confirmation
+    else Slot is no longer available
+        DB-->>BE: Booking rejected due to slot conflict
+        BE-->>FE: 409 Conflict - Slot Unavailable
+        FE-->>Patient: Display error and request another slot
+    else Database or server error
+        DB-->>BE: Booking operation failed
+        BE-->>FE: 500 Internal Server Error
+        FE-->>Patient: Display booking failure message
+    end
 
 ## 3. User Flow (Flowchart)
 
