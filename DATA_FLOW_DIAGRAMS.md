@@ -105,43 +105,52 @@ sequenceDiagram
 
 ```mermaid
 
-sequenceDiagram
-    actor Patient
-    participant FE as React Frontend
-    participant API as Node.js/Express API
-    participant DB as PostgreSQL Database
 
-    Patient->>FE: Select doctor and available slot
-    FE->>API: POST /appointments (slot_id, reason)
-    API->>API: Authenticate user and validate request
+flowchart TD
+    Start([Start]) --> Login[User Enters Login Credentials]
+    Login --> Auth{Login Successful?}
 
-    alt Invalid request or unauthorized user
-        API-->>FE: 400 Bad Request / 401 Unauthorized
-        FE-->>Patient: Display validation or authentication error
-    else Valid request
-        API->>DB: Begin transaction
-        API->>DB: Check slot and insert appointment
-        Note over API,DB: Enforce one active appointment per slot
+    Auth -->|No| LoginError[Display Login Error]
+    LoginError --> Login
 
-        alt Booking successful
-            DB-->>API: Appointment created
-            API->>DB: Commit transaction
-            API-->>FE: 201 Created
-            FE-->>Patient: Display booking confirmation
+    Auth -->|Yes| RoleCheck{User Role?}
 
-        else Slot already booked
-            DB-->>API: Unique constraint conflict
-            API->>DB: Rollback transaction
-            API-->>FE: 409 Conflict
-            FE-->>Patient: Display slot unavailable message
+    RoleCheck -->|Patient| PatientHome[Patient Dashboard]
+    RoleCheck -->|Doctor| DoctorHome[Doctor Dashboard]
 
-        else Database error during transaction
-            DB-->>API: Database error
-            API->>DB: Rollback transaction
-            API-->>FE: 500 Internal Server Error
-            FE-->>Patient: Display generic error message
-        end
-    end
+    PatientHome --> Action{Choose Action}
+
+    Action -->|Browse Doctors| Search[Search Doctors and Specialties]
+    Search --> ViewSlots[View Doctor Availability Slots]
+    ViewSlots --> SelectSlot[Select Desired Slot]
+    SelectSlot --> BookReq[Submit Booking Request]
+    BookReq --> CheckSlot{Slot Still Available?}
+
+    CheckSlot -->|No| ErrorMsg[Display Slot Unavailable Error]
+    ErrorMsg --> ViewSlots
+
+    CheckSlot -->|Yes| SaveDB[Save Appointment in Database]
+    SaveDB --> SaveSuccess{Booking Saved Successfully?}
+    SaveSuccess -->|Yes| Confirm[Show Booking Success]
+    SaveSuccess -->|No| BookingError[Display Booking Failure]
+    Confirm --> End([End])
+    BookingError --> End
+
+    Action -->|Manage Appointments| ViewApp[View Current Appointments]
+    ViewApp --> CancelChoice{Want to Cancel?}
+
+    CancelChoice -->|Yes| CancelDB[Update Appointment Status to Cancelled]
+    CancelDB --> CancelSuccess{Cancellation Successful?}
+    CancelSuccess -->|Yes| CancelConfirm[Show Cancellation Success]
+    CancelSuccess -->|No| CancelError[Display Cancellation Failure]
+    CancelConfirm --> End
+    CancelError --> End
+
+    CancelChoice -->|No| End
+
+    DoctorHome --> DocView[View Assigned Appointments]
+    DocView --> End
+
 
 ```
 
