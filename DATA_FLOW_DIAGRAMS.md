@@ -95,35 +95,49 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    Start([Start]) --> Login[User Logs In]
-    Login --> RoleCheck{User Role?}
+    Start([Start]) --> Login[User Enters Login Credentials]
+    Login --> Auth{Login Successful?}
+
+    Auth -->|No| LoginError[Display Login Error]
+    LoginError --> Login
+
+    Auth -->|Yes| RoleCheck{User Role?}
 
     RoleCheck -->|Patient| PatientHome[Patient Dashboard]
     RoleCheck -->|Doctor| DoctorHome[Doctor Dashboard]
 
     PatientHome --> Action{Choose Action}
 
-    Action -->|Browse Doctors| Search[Search Doctors & Specialties]
+    Action -->|Browse Doctors| Search[Search Doctors and Specialties]
     Search --> ViewSlots[View Doctor Availability Slots]
     ViewSlots --> SelectSlot[Select Desired Slot]
     SelectSlot --> BookReq[Submit Booking Request]
     BookReq --> CheckSlot{Slot Still Available?}
-    CheckSlot -->|No| ErrorMsg["Display 'Slot No Longer Available'"]
+
+    CheckSlot -->|No| ErrorMsg[Display Slot Unavailable Error]
     ErrorMsg --> ViewSlots
-    CheckSlot -->|Yes| SaveDB[Save Appointment in DB]
-    SaveDB --> Confirm[Show Booking Success]
+
+    CheckSlot -->|Yes| SaveDB[Save Appointment in Database]
+    SaveDB --> SaveSuccess{Booking Saved Successfully?}
+    SaveSuccess -->|Yes| Confirm[Show Booking Success]
+    SaveSuccess -->|No| BookingError[Display Booking Failure]
+    Confirm --> End([End])
+    BookingError --> End
 
     Action -->|Manage Appointments| ViewApp[View Current Appointments]
     ViewApp --> CancelChoice{Want to Cancel?}
+
     CancelChoice -->|Yes| CancelDB[Update Appointment Status to Cancelled]
-    CancelDB --> CancelConfirm[Show Cancellation Success]
-    CancelChoice -->|No| End([End])
+    CancelDB --> CancelSuccess{Cancellation Successful?}
+    CancelSuccess -->|Yes| CancelConfirm[Show Cancellation Success]
+    CancelSuccess -->|No| CancelError[Display Cancellation Failure]
+    CancelConfirm --> End
+    CancelError --> End
+
+    CancelChoice -->|No| End
 
     DoctorHome --> DocView[View Assigned Appointments]
     DocView --> End
-
-    Confirm --> End
-    CancelConfirm --> End
 ```
 
 ## 4. Appointment State Diagram
