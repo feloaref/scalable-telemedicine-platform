@@ -11,10 +11,9 @@ graph TD
     System -->|"Booking Confirmation, Doctor List, Status Updates"| Patient
     System -->|"Appointment Details"| Doctor
 ```
-
 ### 1.2. Level 1 DFD
 
-
+```mermaid
 graph TD
     subgraph ext["External Entities"]
         P["Patient"]
@@ -53,7 +52,7 @@ graph TD
     P3 <-->|"Create / Read / Update appointment"| DS4
     P3 -->|"Booking / Cancellation status"| P
     P3 -->|"Assigned appointment details"| D
-
+```
 
 ## 2. Sequence Diagram - Booking an Appointment
 
