@@ -14,6 +14,48 @@ graph TD
 ### 1.2. Level 1 DFD
 
 ```mermaid
+graph TD
+    subgraph ext["External Entities"]
+        P["Patient"]
+        D["Doctor"]
+    end
+
+    subgraph proc["System Processes"]
+        P1["1.0 User Authentication"]
+        P2["2.0 Doctor Search and Browse"]
+        P3["3.0 Appointment Management"]
+    end
+
+    subgraph store["Data Stores"]
+        DS1[("Users and Profiles DB")]
+        DS2[("Doctors and Specialties DB")]
+        DS3[("Availability Slots DB")]
+        DS4[("Appointments DB")]
+    end
+
+    P -->|"Registration / Login credentials"| P1
+    D -->|"Login credentials"| P1
+    P1 <-->|"Read / Create / Update user data"| DS1
+    P1 -->|"Authentication result"| P
+    P1 -->|"Authentication result"| D
+
+    P -->|"Search criteria / Specialty"| P2
+    P2 -->|"Query doctor profiles and specialties"| DS2
+    DS2 -->|"Doctor profiles and specialties"| P2
+    P2 -->|"Query available slots"| DS3
+    DS3 -->|"Available slots"| P2
+    P2 -->|"Doctor list and availability"| P
+
+    P -->|"Book / Cancel appointment request"| P3
+    D -->|"View assigned appointments request"| P3
+    P3 <-->|"Check / Update slot availability"| DS3
+    P3 <-->|"Create / Read / Update appointment"| DS4
+    P3 -->|"Booking / Cancellation status"| P
+    P3 -->|"Assigned appointment details"| D
+```
+## 2. Sequence Diagram - Booking an Appointment
+
+```mermaid
 sequenceDiagram
     autonumber
     actor Patient
@@ -47,41 +89,6 @@ sequenceDiagram
         DB-->>BE: Operation failed
         BE-->>FE: 500 Internal Server Error
         FE-->>Patient: Display failure message
-    end
-```
-## 2. Sequence Diagram - Booking an Appointment
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Patient as Patient
-    participant FE as React Frontend
-    participant BE as Node.js / Express API
-    participant DB as PostgreSQL Database
-
-    Patient->>FE: Browse doctors and view available slots
-    FE->>BE: GET /api/doctors/{id}/slots
-    BE->>DB: Query available slots
-    DB-->>BE: Return available slots
-    BE-->>FE: Return slots list
-    FE-->>Patient: Display available time slots
-
-    Patient->>FE: Select slot and submit booking request
-    FE->>BE: POST /api/appointments
-    BE->>DB: Validate slot and attempt booking
-
-    alt Booking succeeds
-        DB-->>BE: Appointment saved successfully
-        BE-->>FE: 201 Created - Booking Confirmed
-        FE-->>Patient: Display booking confirmation
-    else Slot is no longer available
-        DB-->>BE: Booking rejected due to slot conflict
-        BE-->>FE: 409 Conflict - Slot Unavailable
-        FE-->>Patient: Display error and request another slot
-    else Database operation fails
-        DB-->>BE: Database operation failed
-        BE-->>FE: 500 Internal Server Error
-        FE-->>Patient: Display booking failure message
     end
 ```
 ## 3. User Flow (Flowchart)
