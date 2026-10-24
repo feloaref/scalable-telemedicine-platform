@@ -1,3 +1,4 @@
+
 # Data Flow and System Behavior - Scalable Telemedicine Platform
 
 ## 1. Data Flow Diagrams (DFD)
@@ -6,15 +7,15 @@
 
 ```mermaid
 graph TD
-    Patient["Patient"] -->|"Registration, Search Doctors, Book/Cancel Appointment"| System(("Scalable Telemedicine Platform"))
-    Doctor["Doctor"] -->|"View Assigned Appointments, Manage Profile"| System
-    System -->|"Booking Confirmation, Doctor List, Status Updates"| Patient
-    System -->|"Appointment Details"| Doctor
+    Patient["Patient"] -->|"Registration / Login, Search Doctors, Book / Cancel Appointment"| System(("Scalable Telemedicine Platform"))
+    Doctor["Doctor"] -->|"Registration / Login, View Assigned Appointments, Manage Profile"| System
+    System -->|"Authentication Result, Doctor List, Availability, Booking Confirmation, Status Updates"| Patient
+    System -->|"Authentication Result, Profile Update Result, Appointment Details"| Doctor
 ```
+
 ### 1.2. Level 1 DFD
 
 ```mermaid
-
 graph TD
     subgraph ext["External Entities"]
         P["Patient"]
@@ -25,6 +26,7 @@ graph TD
         P1["1.0 User Authentication"]
         P2["2.0 Doctor Search and Browse"]
         P3["3.0 Appointment Management"]
+        P4["4.0 Profile Management"]
     end
 
     subgraph store["Data Stores"]
@@ -35,7 +37,7 @@ graph TD
     end
 
     P -->|"Registration / Login credentials"| P1
-    D -->|"Login credentials"| P1
+    D -->|"Registration / Login credentials"| P1
     P1 <-->|"Read / Create / Update user data"| DS1
     P1 -->|"Authentication result"| P
     P1 -->|"Authentication result"| D
@@ -52,18 +54,21 @@ graph TD
 
     P3 -->|"Read slot details"| DS3
     DS3 -->|"Slot details"| P3
-
     P3 <-->|"Create / Read / Update appointment"| DS4
-
     P3 -->|"Booking / Cancellation status"| P
     P3 -->|"Assigned appointment details"| D
 
+    P -->|"Profile details / Profile update request"| P4
+    D -->|"Profile details / Profile update request"| P4
+    P4 <-->|"Read / Create / Update profile data"| DS1
+    P4 <-->|"Read / Update doctor details"| DS2
+    P4 -->|"Profile update result"| P
+    P4 -->|"Profile update result"| D
 ```
+
 ## 2. Sequence Diagram - Booking an Appointment
 
 ```mermaid
-
-
 sequenceDiagram
     actor Patient
     participant FE as React Frontend
@@ -79,33 +84,33 @@ sequenceDiagram
         FE-->>Patient: Display validation or authentication error
     else Valid request
         API->>DB: Begin transaction
-        API->>DB: Check slot and insert appointment
-        Note over API,DB: Enforce one active appointment per slot
+        API->>DB: Verify slot exists and insert appointment
+        Note over API,DB: Database constraint prevents multiple active appointments per slot
+
         alt Booking successful
             DB-->>API: Appointment created
             API->>DB: Commit transaction
             API-->>FE: 201 Created
             FE-->>Patient: Display booking confirmation
-        else Slot already booked
-            DB-->>API: Unique constraint conflict
+
+        else Slot already has an active appointment
+            DB-->>API: Unique constraint violation
             API->>DB: Rollback transaction
             API-->>FE: 409 Conflict
             FE-->>Patient: Display slot unavailable message
-        else Unexpected database or server error
-            DB-->>API: Error
+
+        else Unexpected database error during transaction
+            DB-->>API: Database error
             API->>DB: Rollback transaction
             API-->>FE: 500 Internal Server Error
             FE-->>Patient: Display generic error message
         end
     end
-
-
 ```
+
 ## 3. User Flow (Flowchart)
 
 ```mermaid
-
-
 flowchart TD
     Start([Start]) --> Login[User Enters Login Credentials]
     Login --> Auth{Login Successful?}
@@ -129,7 +134,7 @@ flowchart TD
     CheckSlot -->|No| ErrorMsg[Display Slot Unavailable Error]
     ErrorMsg --> ViewSlots
 
-    CheckSlot -->|Yes| SaveDB[Save Appointment in Database]
+    CheckSlot -->|Yes| SaveDB[Submit Booking to API and Database]
     SaveDB --> SaveSuccess{Booking Saved Successfully?}
     SaveSuccess -->|Yes| Confirm[Show Booking Success]
     SaveSuccess -->|No| BookingError[Display Booking Failure]
@@ -139,7 +144,8 @@ flowchart TD
     Action -->|Manage Appointments| ViewApp[View Current Appointments]
     ViewApp --> CancelChoice{Want to Cancel?}
 
-    CancelChoice -->|Yes| CancelDB[Update Appointment Status to Cancelled]
+    CancelChoice -->|Yes| CancelReq[Submit Cancellation Request]
+    CancelReq --> CancelDB[Update Appointment Status to Cancelled]
     CancelDB --> CancelSuccess{Cancellation Successful?}
     CancelSuccess -->|Yes| CancelConfirm[Show Cancellation Success]
     CancelSuccess -->|No| CancelError[Display Cancellation Failure]
@@ -150,14 +156,11 @@ flowchart TD
 
     DoctorHome --> DocView[View Assigned Appointments]
     DocView --> End
-
-
 ```
 
 ## 4. Appointment State Diagram
 
 ```mermaid
-
 stateDiagram-v2
     [*] --> Booked: Patient books an available slot (UC-02)
 
@@ -168,13 +171,13 @@ stateDiagram-v2
 
     Cancelled --> [*]
     Completed --> [*]
-
 ```
+
+**Note:** `PendingConsultation` represents a conceptual lifecycle stage. The database `appointments.status` values remain `booked`, `cancelled`, and `completed`, as defined in `DATABASE_DESIGN.md`.
 
 ## 5. Class Diagram
 
 ```mermaid
-
 classDiagram
     class User {
         +BigInt user_id PK
@@ -250,5 +253,4 @@ classDiagram
     Doctor "1" --> "0..*" AvailabilitySlot : publishes
     Patient "1" --> "0..*" Appointment : books
     AvailabilitySlot "1" --> "0..*" Appointment : appointment history
-
 ```
