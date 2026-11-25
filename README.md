@@ -223,6 +223,19 @@ http://localhost:3000
 
 ---
 
+## Run with Docker
+
+Node.js and PostgreSQL are not required, only Docker with the compose plugin.
+
+```bash
+cp .env.example .env    # then replace every "change-this" value
+docker compose up --build -d
+```
+
+Open `http://localhost:3000`. For demo data, environment variables, Ansible deployment and notes for Jenkins, Kubernetes and Nginx, see [DOCKER_ANSIBLE.md](DOCKER_ANSIBLE.md).
+
+---
+
 ## API Documentation
 
 ### Authentication

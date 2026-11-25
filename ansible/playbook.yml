@@ -1,0 +1,171 @@
+---
+- name: Deploy the telemedicine platform
+  hosts: telemedicine
+  become: true
+
+  pre_tasks:
+    - name: Check that the host runs Ubuntu
+      ansible.builtin.assert:
+        that: ansible_facts['distribution'] == 'Ubuntu'
+        fail_msg: This playbook supports Ubuntu only.
+
+    - name: Check that real secrets were provided
+      ansible.builtin.assert:
+        that:
+          - telemedicine_postgres_password is match('^[A-Za-z0-9]{16,}$')
+          - telemedicine_jwt_secret | length >= 32
+          - "'fake' not in telemedicine_postgres_password | lower"
+          - "'fake' not in telemedicine_jwt_secret | lower"
+        fail_msg: Create group_vars/all/vault.yml from vault.example.yml with real values.
+        quiet: true
+
+  tasks:
+    - name: Check for an existing Docker engine and compose plugin
+      ansible.builtin.command:
+        cmd: "{{ item }}"
+      loop:
+        - docker --version
+        - docker compose version
+      register: docker_check
+      changed_when: false
+      failed_when: false
+
+    - name: Install Docker from the official repository
+      when: docker_check.results | rejectattr('rc', 'equalto', 0) | list | length > 0
+      block:
+        - name: Install repository prerequisites
+          ansible.builtin.apt:
+            name:
+              - ca-certificates
+              - python3-debian
+            state: present
+            update_cache: true
+
+        - name: Add the Docker apt repository
+          ansible.builtin.deb822_repository:
+            name: docker
+            types: deb
+            uris: https://download.docker.com/linux/ubuntu
+            suites: "{{ ansible_facts['distribution_release'] }}"
+            components: stable
+            signed_by: https://download.docker.com/linux/ubuntu/gpg
+
+        - name: Install Docker Engine and the compose plugin
+          ansible.builtin.apt:
+            name:
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+              - docker-buildx-plugin
+              - docker-compose-plugin
+            state: present
+            update_cache: true
+
+    - name: Make sure Docker is running and starts on boot
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Read the commit to deploy
+      ansible.builtin.command:
+        argv:
+          - git
+          - -C
+          - "{{ telemedicine_repo_root }}"
+          - rev-parse
+          - "{{ telemedicine_git_ref }}"
+      delegate_to: localhost
+      become: false
+      register: release_commit
+      changed_when: false
+
+    - name: Read the commit that is already deployed
+      ansible.builtin.slurp:
+        src: "{{ telemedicine_project_dir }}/.release"
+      register: deployed_release
+      failed_when: false
+
+    - name: Decide whether a new release is needed
+      ansible.builtin.set_fact:
+        new_release: "{{ (deployed_release.content | default('') | b64decode | trim) != release_commit.stdout }}"
+
+    - name: Copy the project
+      when: new_release | bool
+      block:
+        - name: Create a temporary archive path
+          ansible.builtin.tempfile:
+            suffix: .tar.gz
+          delegate_to: localhost
+          become: false
+          register: release_archive
+
+        - name: Pack the committed files
+          ansible.builtin.command:
+            argv:
+              - git
+              - -C
+              - "{{ telemedicine_repo_root }}"
+              - archive
+              - --format=tar.gz
+              - "--output={{ release_archive.path }}"
+              - "{{ release_commit.stdout }}"
+              - "."
+              - ":!ansible"
+              - ":!design"
+          delegate_to: localhost
+          become: false
+          changed_when: true
+
+        - name: Remove the old project files
+          ansible.builtin.file:
+            path: "{{ telemedicine_project_dir }}"
+            state: absent
+
+        - name: Create the project directory
+          ansible.builtin.file:
+            path: "{{ telemedicine_project_dir }}"
+            state: directory
+            mode: "0755"
+
+        - name: Unpack the project
+          ansible.builtin.unarchive:
+            src: "{{ release_archive.path }}"
+            dest: "{{ telemedicine_project_dir }}"
+      always:
+        - name: Delete the temporary archive
+          ansible.builtin.file:
+            path: "{{ release_archive.path }}"
+            state: absent
+          delegate_to: localhost
+          become: false
+          when: release_archive.path is defined
+
+    - name: Write the .env file
+      ansible.builtin.template:
+        src: env.j2
+        dest: "{{ telemedicine_project_dir }}/.env"
+        mode: "0600"
+      no_log: true
+
+    - name: Start the stack with docker compose up -d
+      community.docker.docker_compose_v2:
+        project_src: "{{ telemedicine_project_dir }}"
+        project_name: "{{ telemedicine_compose_project }}"
+        build: "{{ 'always' if new_release | bool else 'policy' }}"
+        state: present
+
+    - name: Wait until /api/health returns ok
+      ansible.builtin.uri:
+        url: "{{ telemedicine_health_url }}"
+        return_content: true
+      register: health
+      until: health.json is defined and health.json.ok | default(false)
+      retries: 30
+      delay: 5
+
+    - name: Record the deployed commit
+      ansible.builtin.copy:
+        content: "{{ release_commit.stdout }}\n"
+        dest: "{{ telemedicine_project_dir }}/.release"
+        mode: "0644"

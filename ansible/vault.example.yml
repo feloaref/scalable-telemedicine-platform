@@ -1,0 +1,6 @@
+---
+# FAKE values only. Copy to group_vars/all/vault.yml, replace both values, then encrypt:
+#   ansible-vault encrypt group_vars/all/vault.yml
+# The password must contain only letters and digits (it becomes part of a URL).
+vault_postgres_password: FakeChangeMePassword123
+vault_jwt_secret: FakeChangeMeJwtSecretAtLeast32Characters

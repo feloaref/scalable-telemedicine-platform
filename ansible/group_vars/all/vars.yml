@@ -1,0 +1,18 @@
+---
+# Where the project comes from and where it goes
+telemedicine_repo_root: "{{ playbook_dir | dirname }}"
+telemedicine_git_ref: HEAD
+telemedicine_project_dir: /opt/telemedicine
+
+# Separate from the local "telemedicine" stack, so volumes and images never mix
+telemedicine_compose_project: telemedicine-deploy
+telemedicine_image_tag: deploy
+
+# Database (the password comes from the vault)
+telemedicine_postgres_user: postgres
+telemedicine_postgres_db: app_db
+telemedicine_postgres_password: "{{ vault_postgres_password }}"
+
+# Application (the secret comes from the vault)
+telemedicine_jwt_secret: "{{ vault_jwt_secret }}"
+telemedicine_health_url: http://127.0.0.1:3000/api/health

@@ -99,3 +99,7 @@ Thumbs.db
 *.tgz
 .node_repl_history
 .lock-wscript
+
+# Ansible secrets
+ansible/group_vars/all/vault.yml
+ansible/.vault_pass

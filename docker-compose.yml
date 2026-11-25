@@ -1,0 +1,73 @@
+name: telemedicine
+
+x-database-url: &database-url
+  DATABASE_URL: postgresql://${POSTGRES_USER:?set it in .env}:${POSTGRES_PASSWORD:?set it in .env}@db:5432/${POSTGRES_DB:?set it in .env}
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      # -h 127.0.0.1 skips the temporary socket-only server used during first init.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  migrate:
+    image: telemedicine-migrator:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: migrator
+    restart: "no"
+    environment:
+      <<: *database-url
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    image: telemedicine-app:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      <<: *database-url
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET:?set it in .env}
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  # Demo data for local testing only: docker compose run --rm --build seed
+  seed:
+    image: telemedicine-seed:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: seed
+    profiles: ["seed"]
+    restart: "no"
+    environment:
+      <<: *database-url
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  db-data:
